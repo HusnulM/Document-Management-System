@@ -68,6 +68,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/listmenu/{p1}',          'Config\RolesController@dataaddmenu')->middleware('checkAuth:config/roles');
         Route::post('/saveroleuser',          'Config\RolesController@saveroleuser')->middleware('checkAuth:config/roles');
         Route::post('/saverolemenu',          'Config\RolesController@saverolemenu')->middleware('checkAuth:config/roles');
+
+        Route::post('/deletemenuassignment',  'Config\RolesController@deleteMenuAssignment')->middleware('checkAuth:config/roles');
+        Route::post('/deleteuserassignment',  'Config\RolesController@deleteUserAssignment')->middleware('checkAuth:config/roles');
     });
 
     Route::group(['prefix' => '/config/menus'], function () {
@@ -78,5 +81,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/updategroup',           'Config\MenusController@updateGroup')->middleware('checkAuth:config/menus');
         Route::get('/deletemenu/{id}',        'Config\MenusController@deleteMenu')->middleware('checkAuth:config/menus');
         Route::get('/deletegroup/{id}',       'Config\MenusController@deleteGroup')->middleware('checkAuth:config/menus');
+    });
+
+    Route::group(['prefix' => '/config/approval'], function () {
+        Route::get('/',         'Master\ApprovalController@index')->middleware('checkAuth:config/approval');
     });
 });

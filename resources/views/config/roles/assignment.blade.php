@@ -213,7 +213,7 @@
                     {data: "username", className: 'fname'},
                     {data: "email", className: 'uname'},
                     {"defaultContent": 
-                        "<button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> Delete Assignment</button>"
+                        "<button type='button' class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> Delete Assignment</button>"
                     }
                 ],
                 "bDestroy": true,
@@ -241,7 +241,7 @@
                     {data: "name", className: 'uid'},
                     {data: "group", className: 'fname'},
                     {"defaultContent": 
-                        "<button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> Delete Assignment</button>"
+                        "<button type='button' class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> Delete Assignment</button>"
                     }
                 ],
                 "bDestroy": true,
@@ -270,7 +270,7 @@
                     {data: "username", className: 'fname'},
                     {data: "email", className: 'fname'},
                     {"defaultContent": 
-                        "<button class='btn btn-primary btn-sm button-add-user-role'> <i class='fa fa-plus'></i> Add</button>"
+                        "<button type='button' class='btn btn-primary btn-sm button-add-user-role'> <i class='fa fa-plus'></i> Add</button>"
                     }
                 ],
                 "bDestroy": true,
@@ -297,7 +297,7 @@
                     },
                     {data: "name", className: 'uid'},
                     {"defaultContent": 
-                        "<button class='btn btn-primary btn-sm button-add-menu-role'> <i class='fa fa-plus'></i> Add</button>"
+                        "<button type='button' class='btn btn-primary btn-sm button-add-menu-role'> <i class='fa fa-plus'></i> Add</button>"
                     }
                 ],
                 "bDestroy": true,
@@ -363,6 +363,66 @@
             });
         });
 
+        $("#tbl-menu-roles tbody").on('click', '.button-delete', function(){
+            var menuTable = $('#tbl-menu-roles').DataTable();
+            selected_data = [];
+            selected_data = menuTable.row($(this).closest('tr')).data();
+
+            console.log(selected_data)
+
+            let _token    = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+                url: base_url+'/config/roles/deletemenuassignment',
+                type:"POST",
+                data:{
+                    roleid:{{ $datarole->id }},
+                    menuid:selected_data.menuid,
+                    _token: _token
+                },
+                success:function(response){
+                    console.log(response);
+                    if(response) {
+                        alert(response.success);
+                        loadRoleMenus();
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+
+        $("#tbl-user-roles tbody").on('click', '.button-delete', function(){
+            var menuTable = $('#tbl-user-roles').DataTable();
+            selected_data = [];
+            selected_data = menuTable.row($(this).closest('tr')).data();
+
+            console.log(selected_data)
+
+            let _token    = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+                url: base_url+'/config/roles/deleteuserassignment',
+                type:"POST",
+                data:{
+                    roleid:{{ $datarole->id }},
+                    userid:selected_data.userid,
+                    _token: _token
+                },
+                success:function(response){
+                    console.log(response);
+                    if(response) {
+                        alert(response.success);
+                        loadRoleUsers();
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+        
         $('.btn-add-user').on('click', function(e){
             loadListUser();
             $('#modal-add-user').modal('show');

@@ -130,4 +130,35 @@ class RolesController extends Controller
             return Redirect::to("/config/roles")->withError($e->getMessage());
         }
     }
+
+    public function deleteMenuAssignment(Request $req){
+        // return $req;
+        DB::beginTransaction();
+        try{
+            DB::table('menuroles')->where('menuid', $req['menuid'])->where('roleid', $req['roleid'])->delete();
+
+            DB::commit();
+            return response()->json(['success'=>'Assignment Menu Role deleted']);
+            // return Redirect::to("/config/roles")->withSuccess('Assignment Menu Role deleted');
+        }catch(\Exception $e){
+            DB::rollBack();
+            return response()->json(['error'=>$e->getMessage()]);
+            // return Redirect::to("/config/roles")->withError($e->getMessage());
+        }
+    }
+
+    public function deleteUserAssignment(Request $req){
+        DB::beginTransaction();
+        try{
+            DB::table('userroles')->where('userid', $req['userid'])->where('roleid', $req['roleid'])->delete();
+
+            DB::commit();
+            return response()->json(['success'=>'Assignment User Role deleted']);
+            // return Redirect::to("/config/roles")->withSuccess('Assignment Menu Role deleted');
+        }catch(\Exception $e){
+            DB::rollBack();
+            return response()->json(['error'=>$e->getMessage()]);
+            // return Redirect::to("/config/roles")->withError($e->getMessage());
+        }
+    }
 }
