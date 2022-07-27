@@ -69,4 +69,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/saveroleuser',          'Config\RolesController@saveroleuser')->middleware('checkAuth:config/roles');
         Route::post('/saverolemenu',          'Config\RolesController@saverolemenu')->middleware('checkAuth:config/roles');
     });
+
+    Route::group(['prefix' => '/config/menus'], function () {
+        Route::get('/',                       'Config\MenusController@index')->middleware('checkAuth:config/menus');
+        Route::post('/savemenu',              'Config\MenusController@saveMenus')->middleware('checkAuth:config/menus');
+        Route::post('/savegroup',             'Config\MenusController@saveGroup')->middleware('checkAuth:config/menus');
+        Route::post('/updatemenu',            'Config\MenusController@updateMenu')->middleware('checkAuth:config/menus');
+        Route::post('/updategroup',           'Config\MenusController@updateGroup')->middleware('checkAuth:config/menus');
+        Route::get('/deletemenu/{id}',        'Config\MenusController@deleteMenu')->middleware('checkAuth:config/menus');
+        Route::get('/deletegroup/{id}',       'Config\MenusController@deleteGroup')->middleware('checkAuth:config/menus');
+    });
 });

@@ -14,9 +14,10 @@ function userMenu(){
 
 function userSubMenu(){
     $mnGroups = DB::table('v_usermenus')
-                ->select('menugroup', 'route', 'menu_desc')
+                ->select('menugroup', 'route', 'menu_desc','menu_idx')
                 ->distinct()
                 ->where('userid', Auth::user()->id)
+                ->orderBy('menu_idx','ASC')
                 ->get();
     return $mnGroups;
 }
