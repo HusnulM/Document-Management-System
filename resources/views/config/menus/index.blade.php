@@ -39,6 +39,7 @@
                                         <th>Name</th>
                                         <th>Route</th>
                                         <th>Menu Group</th>
+                                        <th>Display Index</th>
                                         <th></th>
                                     </thead>
                                     <tbody>
@@ -48,6 +49,7 @@
                                             <td>{{ $row->name }}</td>
                                             <td>{{ $row->route }}</td>
                                             <td>{{ $row->group }}</td>
+                                            <td>{{ $row->menu_idx }}</td>
                                             <td style="text-align:center;">
                                                 <a href="{{ url('config/menus/deletemenu/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</a> 
                                                 <button class='btn btn-primary btn-sm btn-edit-menu' data-menuid="{{$row->id}}" data-menuname="{{$row->name}}" data-menuroute="{{$row->route}}"> <i class='fa fa-edit'></i> EDIT</button>
@@ -176,10 +178,10 @@
                     </div> 
                     <div class="col-lg-6 col-md-12">
                         <label for="menugroup">Menu Group</label>
-                        <select name="menugorup" id="menugroup" class="form-control">
+                        <select name="menugroup" id="menugroup" class="form-control">
                             <option value="">Select Menu Group</option>
                             @foreach($groups as $key => $row)
-                            <option value="{{ $row->id }}"> {{ $row->menugroup }} </option>
+                                <option value="{{ $row->id }}"> {{ $row->menugroup }} </option>
                             @endforeach
                         </select>
                     </div> 

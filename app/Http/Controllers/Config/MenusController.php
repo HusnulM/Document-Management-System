@@ -11,10 +11,10 @@ class MenusController extends Controller
 {
     public function index(){
         $menus  = DB::table('menus')
-                    ->select('menus.id','menus.name','menus.route','menus.menugroup', 'menugroups.menugroup as group')
+                    ->select('menus.id','menus.name','menus.route','menus.menugroup', 'menugroups.menugroup as group', 'menus.menu_idx')
                     ->join('menugroups','menus.menugroup','=','menugroups.id')
                     ->orderBy('menugroups._index', 'ASC')
-                    ->orderBy('menus.id', 'ASC')
+                    ->orderBy('menus.menu_idx', 'ASC')
                     ->get();
         $groups = DB::table('menugroups')->orderBy('_index', 'ASC')->get();
         return view('config.menus.index', ['menus' => $menus, 'groups' => $groups]);
