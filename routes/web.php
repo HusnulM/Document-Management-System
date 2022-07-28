@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('login');
-// });
+Route::get('/tes', function () {
+    return "tes";
+});
 
 Route::group(['middleware' => 'guest'], function(){
     Route::group(['middleware' => 'revalidate'], function () {
@@ -29,13 +29,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/dashboard', 'HomeController@dashboard');
         Route::post('logout',    'HomeController@logout')->name('logout');
         Route::get('logout2',    'HomeController@logout')->name('logout');
-    });
-
-    Route::group(['prefix' => '/master'], function () {
-        Route::get('/approval',         'Master\ApprovalController@index')->middleware('checkAuth:master/approval');
-        Route::get('/approvallist',     'Master\ApprovalController@approvallist')->middleware('checkAuth:master/approval');
-
-        
     });
 
     Route::group(['prefix' => '/transaction'], function () {
