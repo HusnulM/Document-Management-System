@@ -12,7 +12,7 @@
           <a href="#" class="d-block">{{ Auth::user()->name }}</a>
         </div>
       </div>
-
+      
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         @foreach(userMenu() as $headMenu)
@@ -28,9 +28,9 @@
                 @endif
             @endforeach
           @else
-            <li class="nav-item menu-open">
-              <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-tachometer-alt"></i>
+            <li class="nav-item {{ groupOpen($headMenu->menugroup) }}">
+              <a href="#" class="nav-link {{ groupOpen($headMenu->menugroup) == 'menu-open' ? 'active' : '' }}" style="background-color:#2ea19f;">
+                <i class="nav-icon {{ $headMenu->groupicon ? $headMenu->groupicon : 'fas fa-tachometer-alt' }}"></i>
                 <p>
                 {{ $headMenu->groupname }}
                   <i class="right fas fa-angle-left"></i>

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\DB;
 
+
 function userMenu(){
     $mnGroups = DB::table('v_usermenus')
                 ->select('menugroup', 'groupname', 'groupicon','group_idx')
@@ -22,7 +23,26 @@ function userSubMenu(){
     return $mnGroups;
 }
 
+function groupOpen($groupid){
+    $routeName = \Route::current()->uri();
+    $selectMenu = DB::table('menus')->where('route', $routeName)->first();
+    if($selectMenu){
+        return $groupid == $selectMenu->menugroup ? 'menu-open' : '';
+    }
+    // return request()->is("*".$groupname."*") ? 'menu-open' : '';
+}
+
+function currentURL(){
+    $routeName = \Route::current()->uri();
+    $selectMenu = DB::table('menus')->where('route', $routeName)->first();
+    if($selectMenu){
+
+    }
+    dd(\Route::current()->uri());
+}
+
 function active($partialUrl){
+    // dd($partialUrl);
     return request()->is("*".$partialUrl."*") ? 'active' : '';
 }
 

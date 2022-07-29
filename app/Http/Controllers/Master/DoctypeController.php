@@ -12,6 +12,7 @@ class DoctypeController extends Controller
     public function index(){
         // $data = DB::table('doctypes')->get();
         // return view('master.doctype.index', ['doctype' => $data]);
-        return "Document Types";
+        // return "Document Types";
+        return view('master.doctype.index');
     }
 }
