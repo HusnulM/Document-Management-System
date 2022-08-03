@@ -29,7 +29,7 @@
             @endforeach
           @else
             <li class="nav-item {{ groupOpen($headMenu->menugroup) }}">
-              <a href="#" class="nav-link {{ groupOpen($headMenu->menugroup) == 'menu-open' ? 'active' : '' }}" style="background-color:#2ea19f;">
+              <a href="#" class="nav-link {{ groupOpen($headMenu->menugroup) == 'menu-open' ? 'active' : '' }}" style="{{ groupOpen($headMenu->menugroup) == 'menu-open' ? '' : 'background-color:#265a91;' }}">
                 <i class="nav-icon {{ $headMenu->groupicon ? $headMenu->groupicon : 'fas fa-tachometer-alt' }}"></i>
                 <p>
                 {{ $headMenu->groupname }}

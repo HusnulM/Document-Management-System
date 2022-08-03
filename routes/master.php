@@ -19,4 +19,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/update',    'Master\DocareaController@update')->middleware('checkAuth:master/docarea');
         Route::get('/delete/{id}','Master\DocareaController@delete')->middleware('checkAuth:master/docarea');  
     });
+
+    Route::group(['prefix' => '/master/doclevel'], function () {
+        Route::get('/',           'Master\DoclevelController@index')->middleware('checkAuth:master/doclevel');  
+        Route::post('/save',      'Master\DoclevelController@save')->middleware('checkAuth:master/doclevel');
+        Route::post('/update',    'Master\DoclevelController@update')->middleware('checkAuth:master/doclevel');
+        Route::get('/delete/{id}','Master\DoclevelController@delete')->middleware('checkAuth:master/doclevel');  
+    });
 });
