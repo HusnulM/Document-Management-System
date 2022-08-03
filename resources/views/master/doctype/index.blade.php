@@ -26,6 +26,7 @@
                         <thead>
                             <th style="width:100px;">No</th>
                             <th>Document Type</th>
+                            <th>Workflow Approval Group</th>
                             <th style="width:240px; text-align:center;"></th>
                         </thead>
                         <tbody>
@@ -33,9 +34,10 @@
                             <tr>
                                 <td>{{$key+1}}</td>
                                 <td>{{ $row->doctype }}</td>
+                                <td>{{ $row->wf_groupname }}</td>
                                 <td style="text-align:center;">
                                     <a href="{{ url('master/doctype/delete') }}/{{$row->id}}" class="btn btn-danger btn-sm button-delete"> <i class='fa fa-trash'></i> DELETE</a> 
-                                    <button type="button" class="btn btn-primary btn-sm button-edit" data-doctypeid="{{$row->id}}" data-doctype="{{$row->doctype}}"> <i class='fa fa-edit'></i> EDIT</button>
+                                    <button type="button" class="btn btn-primary btn-sm button-edit" data-doctypeid="{{$row->id}}" data-doctype="{{$row->doctype}}" data-wfgroup="{{$row->workflow_group}}" data-wfgroupname="{{$row->wf_groupname}}"> <i class='fa fa-edit'></i> EDIT</button>
                                 </td>
                             </tr>
                             @endforeach
@@ -65,6 +67,15 @@
                     <div class="col-lg-12">
                          <label for="doctype">Document Type</label>
                          <input type="text" name="doctype" class="form-control" autocomplete="off" required>
+                    </div> 
+                    <div class="col-lg-12">
+                        <label for="workflowgoroup">Workflow Approval Group</label>
+                        <select name="workflowgoroup" class="form-control" required>
+                            <option value="">Workflow Approval Group</option>
+                            @foreach($groups as $key => $row)
+                                <option value="{{ $row->id }}">{{ $row->workflow_group }}</option>
+                            @endforeach
+                        </select>
                     </div> 
                 </div>
             </div>
@@ -97,6 +108,15 @@
                          <input type="text" name="doctype" id="doctype" class="form-control" autocomplete="off" required>
                          <input type="hidden" name="doctypeid" id="doctypeid" class="form-control">
                     </div> 
+                    <div class="col-lg-12">
+                        <label for="workflowgoroup">Workflow Approval Group</label>
+                        <select name="workflowgoroup" id="workflowgoroup" class="form-control">
+                            <option value="X">Workflow Approval Group</option>
+                            @foreach($groups as $key => $row)
+                                <option value="{{ $row->id }}">{{ $row->workflow_group }}</option>
+                            @endforeach
+                        </select>
+                    </div> 
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -124,6 +144,7 @@
             var _data = $(this).data();
             $('#doctypeid').val(_data.doctypeid);
             $('#doctype').val(_data.doctype);
+            // $('#workflowgoroup').val(_data.wfgroup);
             $('#modal-edit-doctype').modal('show');
         });
 

@@ -10,8 +10,9 @@ use Validator,Redirect,Response;
 class DoctypeController extends Controller
 {
     public function index(){
-        $data = DB::table('doctypes')->get();
-        return view('master.doctype.index', ['doctype' => $data]);
+        $data = DB::table('v_doctype_wfgroup')->get();
+        $groups = DB::table('workflow_groups')->orderBy('id', 'ASC')->get();
+        return view('master.doctype.index', ['doctype' => $data, 'groups' => $groups]);
         // return "Document Types";
         // return view('master.doctype.index');
     }
@@ -21,6 +22,7 @@ class DoctypeController extends Controller
         try{
             DB::table('doctypes')->insert([
                 'doctype'   => $req['doctype'],
+                'workflow_group' => $req['workflowgoroup'],
                 'createdon' => date('Y-m-d H:m:s'),
                 'createdby' => Auth::user()->email ?? Auth::user()->username
             ]);
@@ -35,9 +37,16 @@ class DoctypeController extends Controller
     public function update(Request $req){
         DB::beginTransaction();
         try{
-            DB::table('doctypes')->where('id', $req['doctypeid'])->update([
-                'doctype'   => $req['doctype']
-            ]);
+            if($req['workflowgoroup'] === "X"){
+                DB::table('doctypes')->where('id', $req['doctypeid'])->update([
+                    'doctype'   => $req['doctype'],
+                ]);
+            }else{
+                DB::table('doctypes')->where('id', $req['doctypeid'])->update([
+                    'doctype'   => $req['doctype'],
+                    'workflow_group' => $req['workflowgoroup'],
+                ]);
+            }
             DB::commit();
             return Redirect::to("/master/doctype")->withSuccess('Document Type Updated');
         } catch(\Exception $e){

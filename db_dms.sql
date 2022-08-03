@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 27, 2022 at 08:33 AM
+-- Generation Time: Aug 03, 2022 at 06:09 PM
 -- Server version: 8.0.29
 -- PHP Version: 7.4.27
 
@@ -20,6 +20,20 @@ SET time_zone = "+00:00";
 --
 -- Database: `db_dms`
 --
+
+DELIMITER $$
+--
+-- Functions
+--
+CREATE DEFINER=`root`@`localhost` FUNCTION `fGetUserName` (`pUserid` INT) RETURNS VARCHAR(50) CHARSET utf8mb4 COLLATE utf8mb4_general_ci BEGIN
+    DECLARE hasil VARCHAR(50);
+	
+    SET hasil = (SELECT name from users where id = pUserid);
+    	-- return the customer level
+	RETURN (hasil);
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -39,14 +53,83 @@ CREATE TABLE `activities` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `docareas`
+--
+
+CREATE TABLE `docareas` (
+  `id` int NOT NULL,
+  `docarea` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `mail` varchar(60) COLLATE utf8mb4_general_ci NOT NULL,
+  `createdby` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `createdon` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `docareas`
+--
+
+INSERT INTO `docareas` (`id`, `docarea`, `mail`, `createdby`, `createdon`) VALUES
+(1, 'Cable/Magnetics', 'husnulmub@gmail.com', 'husnulmub@gmail.com', '2022-08-02 00:08:54'),
+(2, 'Compliance', 'husnulmub@gmail.com', 'husnulmub@gmail.com', '2022-08-02 00:08:17');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `doclevels`
+--
+
+CREATE TABLE `doclevels` (
+  `id` int NOT NULL,
+  `doclevel` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `createdon` datetime NOT NULL,
+  `createdby` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `doclevels`
+--
+
+INSERT INTO `doclevels` (`id`, `doclevel`, `createdon`, `createdby`) VALUES
+(1, 'Level 1', '2022-08-03 06:08:01', 'husnulmub@gmail.com'),
+(2, 'Level 2', '2022-08-03 06:08:12', 'husnulmub@gmail.com'),
+(4, 'Level 3', '2022-08-03 06:08:47', 'husnulmub@gmail.com');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `doctypes`
+--
+
+CREATE TABLE `doctypes` (
+  `id` int NOT NULL,
+  `doctype` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `workflow_group` int DEFAULT NULL,
+  `createdon` datetime NOT NULL,
+  `createdby` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `doctypes`
+--
+
+INSERT INTO `doctypes` (`id`, `doctype`, `workflow_group`, `createdon`, `createdby`) VALUES
+(1, 'Internal Procedure', 3, '2022-08-01 23:08:05', 'husnulmub@gmail.com'),
+(2, 'Work Instruction', 4, '2022-08-01 23:08:24', 'husnulmub@gmail.com');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `documents`
 --
 
 CREATE TABLE `documents` (
   `id` int UNSIGNED NOT NULL,
-  `document_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `dcp_number` varchar(40) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `document_type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `document_title` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` text COLLATE utf8mb4_unicode_ci,
   `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `effectivity_date` datetime DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `createdby` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -127,10 +210,10 @@ CREATE TABLE `menugroups` (
 --
 
 INSERT INTO `menugroups` (`id`, `menugroup`, `groupicon`, `_index`, `created_at`, `updated_at`, `createdby`, `updatedby`) VALUES
-(1, 'MASTER', '', 1, '2022-07-26 02:12:00', NULL, 'sys-admin', ''),
-(2, 'SETTINGS', '', 3, '2022-07-26 02:12:09', NULL, 'sys-admin', ''),
-(3, 'TRANSACTION', '', 2, '2022-07-26 02:12:09', NULL, 'sys-admin', ''),
-(5, 'PROCUREMENT', NULL, 4, '2022-07-26 23:07:03', NULL, 'husnulmub@gmail.com', 'husnulmub@gmail.com');
+(1, 'MASTER', 'fa fa-database', 1, '2022-07-26 02:12:00', NULL, 'sys-admin', ''),
+(2, 'SETTINGS', 'fa fa-gear', 4, '2022-07-26 02:12:09', NULL, 'sys-admin', 'husnulmub@gmail.com'),
+(3, 'TRANSACTION', 'fa fa-list', 2, '2022-07-26 02:12:09', NULL, 'sys-admin', ''),
+(5, 'PROCUREMENT', NULL, 3, '2022-07-26 23:07:03', NULL, 'husnulmub@gmail.com', 'husnulmub@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -161,7 +244,8 @@ INSERT INTO `menuroles` (`menuid`, `roleid`, `created_at`, `updated_at`, `create
 (5, 1, '2022-07-26 02:21:32', NULL, 'sys-admin', ''),
 (6, 1, '2022-07-26 02:21:32', NULL, 'sys-admin', ''),
 (6, 2, '2022-07-26 03:07:26', NULL, 'husnulmub@gmail.com', NULL),
-(7, 1, '2022-07-26 18:07:53', NULL, 'husnulmub@gmail.com', NULL);
+(7, 1, '2022-07-26 18:07:53', NULL, 'husnulmub@gmail.com', NULL),
+(15, 1, '2022-08-02 19:08:40', NULL, 'husnulmub@gmail.com', NULL);
 
 -- --------------------------------------------------------
 
@@ -186,19 +270,26 @@ CREATE TABLE `menus` (
 --
 
 INSERT INTO `menus` (`id`, `name`, `route`, `menugroup`, `menu_idx`, `created_at`, `updated_at`, `createdby`, `updatedby`) VALUES
-(1, 'Master Approval', 'master/approval', 1, 1, '2022-07-26 02:12:52', NULL, 'sys-admin', ''),
-(2, 'Document Type', 'master/doctype', 1, 2, '2022-07-26 02:12:52', NULL, 'sys-admin', ''),
-(3, 'Document Area', 'master/docarea', 1, 3, '2022-07-26 02:12:52', NULL, 'sys-admin', ''),
-(4, 'Users', 'config/users', 2, 7, '2022-07-26 02:12:52', NULL, 'sys-admin', ''),
-(5, 'Roles', 'config/roles', 2, 9, '2022-07-26 02:12:52', NULL, 'sys-admin', ''),
-(6, 'Document', 'transaction/document', 3, 4, '2022-07-26 02:12:52', NULL, 'sys-admin', ''),
-(7, 'Menus', 'config/menus', 2, 8, '2022-07-26 02:12:52', NULL, 'sys-admin', 'husnulmub@gmail.com');
+(1, 'Document Approval', 'config/workflow', 2, 4, '2022-07-26 02:12:52', NULL, 'sys-admin', 'husnulmub@gmail.com'),
+(2, 'Document Type', 'master/doctype', 1, 1, '2022-07-26 02:12:52', NULL, 'sys-admin', ''),
+(3, 'Document Area', 'master/docarea', 1, 2, '2022-07-26 02:12:52', NULL, 'sys-admin', ''),
+(4, 'Users', 'config/users', 2, 1, '2022-07-26 02:12:52', NULL, 'sys-admin', ''),
+(5, 'Roles', 'config/roles', 2, 3, '2022-07-26 02:12:52', NULL, 'sys-admin', ''),
+(6, 'Document', 'transaction/document', 3, 1, '2022-07-26 02:12:52', NULL, 'sys-admin', ''),
+(7, 'Menus', 'config/menus', 2, 2, '2022-07-26 02:12:52', NULL, 'sys-admin', 'husnulmub@gmail.com'),
+(13, 'Create PR', 'proc/pr', 5, 1, '2022-07-27 02:07:43', NULL, 'husnulmub@gmail.com', NULL),
+(14, 'Create PO', 'proc/po', 5, 2, '2022-07-27 02:07:43', NULL, 'husnulmub@gmail.com', NULL),
+(15, 'Document Level', 'master/doclevel', 1, 3, '2022-08-02 19:08:22', NULL, 'husnulmub@gmail.com', NULL);
 
 --
 -- Triggers `menus`
 --
 DELIMITER $$
 CREATE TRIGGER `deleteMenuAssignment` AFTER DELETE ON `menus` FOR EACH ROW DELETE FROM menuroles WHERE menuid = OLD.id
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `setMenuDisIndex` BEFORE INSERT ON `menus` FOR EACH ROW set NEW.menu_idx = (SELECT count(menugroup)+1 from menus WHERE menugroup = NEW.menugroup)
 $$
 DELIMITER ;
 
@@ -290,8 +381,6 @@ CREATE TABLE `userroles` (
 
 INSERT INTO `userroles` (`userid`, `roleid`, `created_at`, `updated_at`, `createdby`, `updatedby`) VALUES
 (1, 1, '2022-07-26 02:19:44', NULL, 'sys-admin', ''),
-(1, 2, '2022-07-26 03:07:08', NULL, 'husnulmub@gmail.com', NULL),
-(2, 2, '2022-07-26 03:07:14', NULL, 'husnulmub@gmail.com', NULL),
 (3, 2, '2022-07-26 03:07:14', NULL, 'husnulmub@gmail.com', NULL);
 
 -- --------------------------------------------------------
@@ -326,16 +415,31 @@ INSERT INTO `users` (`id`, `name`, `email`, `username`, `email_verified_at`, `pa
 -- --------------------------------------------------------
 
 --
+-- Stand-in structure for view `v_doctype_wfgroup`
+-- (See below for the actual view)
+--
+CREATE TABLE `v_doctype_wfgroup` (
+`createdby` varchar(50)
+,`createdon` datetime
+,`doctype` varchar(50)
+,`id` int
+,`wf_groupname` varchar(50)
+,`workflow_group` int
+);
+
+-- --------------------------------------------------------
+
+--
 -- Stand-in structure for view `v_menuroles`
 -- (See below for the actual view)
 --
 CREATE TABLE `v_menuroles` (
-`menuid` int
+`group` varchar(50)
+,`menugroup` int
+,`menuid` int
+,`name` varchar(100)
 ,`roleid` int
 ,`rolename` varchar(50)
-,`name` varchar(100)
-,`menugroup` int
-,`group` varchar(50)
 );
 
 -- --------------------------------------------------------
@@ -345,19 +449,19 @@ CREATE TABLE `v_menuroles` (
 -- (See below for the actual view)
 --
 CREATE TABLE `v_usermenus` (
-`id` bigint unsigned
-,`menu_desc` varchar(100)
-,`route` varchar(100)
-,`menugroup` int
-,`menu_idx` int
-,`groupname` varchar(50)
-,`groupicon` varchar(50)
+`email` varchar(100)
 ,`group_idx` int
+,`groupicon` varchar(50)
+,`groupname` varchar(50)
+,`id` bigint unsigned
+,`menu_desc` varchar(100)
+,`menu_idx` int
+,`menugroup` int
+,`name_of_user` varchar(100)
 ,`roleid` int
 ,`rolename` varchar(50)
+,`route` varchar(100)
 ,`userid` int
-,`name_of_user` varchar(100)
-,`email` varchar(100)
 ,`username` varchar(100)
 );
 
@@ -368,13 +472,108 @@ CREATE TABLE `v_usermenus` (
 -- (See below for the actual view)
 --
 CREATE TABLE `v_userroles` (
-`roleid` int
+`email` varchar(100)
+,`name` varchar(100)
+,`roleid` int
 ,`rolename` varchar(50)
 ,`userid` int
-,`name` varchar(100)
-,`email` varchar(100)
 ,`username` varchar(100)
 );
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `v_workflow_assignments`
+-- (See below for the actual view)
+--
+CREATE TABLE `v_workflow_assignments` (
+`approval_level` int
+,`approver` varchar(50)
+,`approverid` int
+,`creator` varchar(50)
+,`creatorid` int
+,`wf_categoryname` varchar(50)
+,`wf_groupname` varchar(50)
+,`workflow_categories` int
+,`workflow_group` int
+);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `workflow_assignments`
+--
+
+CREATE TABLE `workflow_assignments` (
+  `workflow_group` int NOT NULL,
+  `approval_level` int NOT NULL,
+  `workflow_categories` int NOT NULL,
+  `creator` int NOT NULL,
+  `approver` int NOT NULL,
+  `createdon` datetime NOT NULL,
+  `createdby` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `workflow_assignments`
+--
+
+INSERT INTO `workflow_assignments` (`workflow_group`, `approval_level`, `workflow_categories`, `creator`, `approver`, `createdon`, `createdby`) VALUES
+(3, 1, 1, 2, 3, '2022-08-03 15:08:19', 'husnulmub@gmail.com'),
+(3, 2, 4, 2, 1, '2022-08-03 15:08:19', 'husnulmub@gmail.com'),
+(4, 1, 1, 1, 3, '2022-08-03 15:08:19', 'husnulmub@gmail.com'),
+(4, 2, 4, 1, 2, '2022-08-03 15:08:12', 'husnulmub@gmail.com');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `workflow_categories`
+--
+
+CREATE TABLE `workflow_categories` (
+  `id` int NOT NULL,
+  `workflow_category` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `createdon` datetime NOT NULL,
+  `createdby` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `workflow_categories`
+--
+
+INSERT INTO `workflow_categories` (`id`, `workflow_category`, `createdon`, `createdby`) VALUES
+(1, 'Reviewer', '2022-08-03 14:08:01', 'husnulmub@gmail.com'),
+(4, 'Approver', '2022-08-03 15:08:05', 'husnulmub@gmail.com');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `workflow_groups`
+--
+
+CREATE TABLE `workflow_groups` (
+  `id` int NOT NULL,
+  `workflow_group` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `createdon` datetime DEFAULT NULL,
+  `createdby` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `workflow_groups`
+--
+
+INSERT INTO `workflow_groups` (`id`, `workflow_group`, `createdon`, `createdby`) VALUES
+(3, 'Approval Group 1', '2022-08-03 07:08:33', 'husnulmub@gmail.com'),
+(4, 'Approval Group 2', '2022-08-03 07:08:33', 'husnulmub@gmail.com');
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `v_doctype_wfgroup`
+--
+DROP TABLE IF EXISTS `v_doctype_wfgroup`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_doctype_wfgroup`  AS SELECT `a`.`id` AS `id`, `a`.`doctype` AS `doctype`, `a`.`workflow_group` AS `workflow_group`, `a`.`createdon` AS `createdon`, `a`.`createdby` AS `createdby`, `b`.`workflow_group` AS `wf_groupname` FROM (`doctypes` `a` left join `workflow_groups` `b` on((`a`.`workflow_group` = `b`.`id`))) ;
 
 -- --------------------------------------------------------
 
@@ -403,6 +602,15 @@ DROP TABLE IF EXISTS `v_userroles`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_userroles`  AS SELECT `a`.`roleid` AS `roleid`, `c`.`rolename` AS `rolename`, `a`.`userid` AS `userid`, `b`.`name` AS `name`, `b`.`email` AS `email`, `b`.`username` AS `username` FROM ((`userroles` `a` join `users` `b` on((`a`.`userid` = `b`.`id`))) join `roles` `c` on((`a`.`roleid` = `c`.`id`))) ORDER BY `c`.`id` ASC ;
 
+-- --------------------------------------------------------
+
+--
+-- Structure for view `v_workflow_assignments`
+--
+DROP TABLE IF EXISTS `v_workflow_assignments`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_workflow_assignments`  AS SELECT `a`.`workflow_group` AS `workflow_group`, `b`.`workflow_group` AS `wf_groupname`, `a`.`approval_level` AS `approval_level`, `a`.`workflow_categories` AS `workflow_categories`, `c`.`workflow_category` AS `wf_categoryname`, `fGetUserName`(`a`.`creator`) AS `creator`, `fGetUserName`(`a`.`approver`) AS `approver`, `a`.`creator` AS `creatorid`, `a`.`approver` AS `approverid` FROM ((`workflow_assignments` `a` join `workflow_groups` `b` on((`a`.`workflow_group` = `b`.`id`))) join `workflow_categories` `c` on((`a`.`workflow_categories` = `c`.`id`))) ORDER BY `a`.`workflow_group` ASC, `a`.`approval_level` ASC ;
+
 --
 -- Indexes for dumped tables
 --
@@ -413,6 +621,24 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 ALTER TABLE `activities`
   ADD PRIMARY KEY (`id`),
   ADD KEY `activities_created_by_foreign` (`created_by`);
+
+--
+-- Indexes for table `docareas`
+--
+ALTER TABLE `docareas`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `doclevels`
+--
+ALTER TABLE `doclevels`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `doctypes`
+--
+ALTER TABLE `doctypes`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `documents`
@@ -490,6 +716,24 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `users_username_unique` (`username`);
 
 --
+-- Indexes for table `workflow_assignments`
+--
+ALTER TABLE `workflow_assignments`
+  ADD PRIMARY KEY (`workflow_group`,`approval_level`,`workflow_categories`,`creator`,`approver`);
+
+--
+-- Indexes for table `workflow_categories`
+--
+ALTER TABLE `workflow_categories`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `workflow_groups`
+--
+ALTER TABLE `workflow_groups`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -498,6 +742,24 @@ ALTER TABLE `users`
 --
 ALTER TABLE `activities`
   MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `docareas`
+--
+ALTER TABLE `docareas`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `doclevels`
+--
+ALTER TABLE `doclevels`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `doctypes`
+--
+ALTER TABLE `doctypes`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `documents`
@@ -533,7 +795,7 @@ ALTER TABLE `menugroups`
 -- AUTO_INCREMENT for table `menus`
 --
 ALTER TABLE `menus`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `migrations`
@@ -552,6 +814,18 @@ ALTER TABLE `roles`
 --
 ALTER TABLE `users`
   MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `workflow_categories`
+--
+ALTER TABLE `workflow_categories`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `workflow_groups`
+--
+ALTER TABLE `workflow_groups`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables

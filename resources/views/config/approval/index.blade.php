@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'Workflow Document Approval')
+@section('title', 'Document Approval')
 
 @section('additional-css')
 @endsection
@@ -12,23 +12,60 @@
             <!-- <h4 class="mt-5 ">Custom Content Above</h4> -->
             <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">Workflow Group</a>
+                    <a class="nav-link active" id="custom-content-categories-tab" data-toggle="pill" href="#custom-content-categories" role="tab" aria-controls="custom-content-categories" aria-selected="true">Workflow Approval Categories</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="custom-content-above-profile-tab" data-toggle="pill" href="#custom-content-above-profile" role="tab" aria-controls="custom-content-above-profile" aria-selected="false">Workflow Group Assignment</a>
+                    <a class="nav-link" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">Workflow Approval Group</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-content-above-profile-tab" data-toggle="pill" href="#custom-content-above-profile" role="tab" aria-controls="custom-content-above-profile" aria-selected="false">Workflow Approval Group Assignment</a>
                 </li>
             </ul>
             <!-- <div class="tab-custom-content">
                 <p class="lead mb-0">Custom Content goes here</p>
             </div> -->
             <div class="tab-content" id="custom-content-above-tabContent">
-                <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
+                <div class="tab-pane fade show active" id="custom-content-categories" role="tabpanel" aria-labelledby="custom-content-categories-tab">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-primary btn-sm btn-add-categories">
+                                        <i class="fas fa-plus"></i> Add Workflow Approval Categories
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <table id="tbl-categories" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
+                                    <thead>
+                                        <th>No</th>
+                                        <th>Workflow Approval Categories</th>
+                                        <th></th>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($ctgrs as $key => $row)
+                                        <tr>
+                                            <td>{{ $key+1 }}</td>
+                                            <td>{{ $row->workflow_category }}</td>
+                                            <td style="text-align:center;">
+                                                <a href="{{ url('config/workflow/deletecategories/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</a> 
+                                                <button class='btn btn-primary btn-sm btn-edit-workflow-categories' data-workflow_categoryid="{{$row->id}}" data-workflow_category="{{$row->workflow_category}}"> <i class='fa fa-edit'></i> EDIT</button>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade show" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-header">
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-primary btn-sm btn-add-user">
-                                        <i class="fas fa-plus"></i> Add Workflow Group
+                                        <i class="fas fa-plus"></i> Add Workflow Approval Group
                                     </button>
                                 </div>
                             </div>
@@ -36,7 +73,7 @@
                                 <table id="tbl-menu" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                                     <thead>
                                         <th>No</th>
-                                        <th>Workflow Group</th>
+                                        <th>Workflow Approval Group</th>
                                         <th></th>
                                     </thead>
                                     <tbody>
@@ -46,7 +83,7 @@
                                             <td>{{ $row->workflow_group }}</td>
                                             <td style="text-align:center;">
                                                 <a href="{{ url('config/workflow/deletegroup/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</a> 
-                                                <button class='btn btn-primary btn-sm btn-edit-menu' data-menuid="{{$row->id}}" data-workflow_group="{{$row->workflow_group}}"> <i class='fa fa-edit'></i> EDIT</button>
+                                                <button class='btn btn-primary btn-sm btn-edit-group' data-workflow_groupid="{{$row->id}}" data-workflow_group="{{$row->workflow_group}}"> <i class='fa fa-edit'></i> EDIT</button>
                                             </td>
                                         </tr>
                                         @endforeach
@@ -61,21 +98,38 @@
                         <div class="card">
                             <div class="card-header">
                                 <div class="card-tools">
-                                    <button type="button" class="btn btn-primary btn-sm btn-add-menu">
-                                        <i class="fas fa-plus"></i> Add Menu Group
+                                    <button type="button" class="btn btn-primary btn-sm btn-add-assignment">
+                                        <i class="fas fa-plus"></i> Add Assignment
                                     </button>
                                 </div>
                             </div>
                             <div class="card-body">
-                                <table id="tbl-menu-group" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
+                                <table id="tbl-worflow-assignment" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                                     <thead>
                                         <th>No</th>
-                                        <th>Menu Group</th>
-                                        <th>Sort Index</th>
+                                        <th>Approval Group</th>
+                                        <th>Approval Level</th>
+                                        <th>Approval Categories</th>
+                                        <th>Creator</th>
+                                        <th>Approver</th>
                                         <th></th>
                                     </thead>
                                     <tbody>
-                                        
+                                        @foreach($wfassignments as $key => $row)
+                                        <tr>
+                                            <td>{{ $key+1 }}</td>
+                                            <td>{{ $row->wf_groupname }}</td>
+                                            <td>{{ $row->approval_level }}</td>
+                                            <td>{{ $row->wf_categoryname }}</td>
+                                            <td>{{ $row->creator }}</td>
+                                            <td>{{ $row->approver }}</td>
+                                            <td style="text-align:center;">
+                                                <a href="{{ url('config/workflow/deleteassignment/') }}/{{$row->workflow_group}}/{{$row->approval_level}}/{{$row->workflow_categories}}/{{$row->creatorid}}/{{$row->approverid}}" class='btn btn-danger btn-sm button-delete'> 
+                                                    <i class='fa fa-trash'></i> DELETE ASSIGNMENT
+                                                </a> 
+                                            </td>
+                                        </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>                                                    
                             </div>
@@ -89,13 +143,60 @@
 @endsection
 
 @section('additional-modal')
+<div class="modal fade" id="modal-add-categories">
+    <form action="{{ url('config/workflow/savecategories') }}" method="post">
+        @csrf
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Add New Approval Categories</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
+                            <thead>
+                                <th>Approval Categories</th>
+                                <th style="width:50px; text-align:center;">
+                                    <button type="button" class="btn btn-success btn-sm btn-add-new-categories">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </th>
+                            </thead>
+                            <tbody id="tbl-new-categories-body">
+
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="1"></td>
+                                    <td>
+                                        
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>  
+                    </div> 
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </div>
+        </div>
+    </form>
+</div>
+
 <div class="modal fade" id="modal-add-user">
     <form action="{{ url('config/workflow/savegroup') }}" method="post">
         @csrf
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title">Add New Workflow Group</h4>
+              <h4 class="modal-title">Add New Approval Group</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -136,23 +237,23 @@
     </form>
 </div>
 
-<div class="modal fade" id="modal-edit-menu">
-    <form action="{{ url('config/menus/updatemenu') }}" method="post">
+<div class="modal fade" id="modal-edit-group">
+    <form action="{{ url('config/workflow/updategroup') }}" method="post">
         @csrf
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title">Edit Application Menu</h4>
+              <h4 class="modal-title">Edit Workflow Approval Group</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-lg-6 col-md-12">
-                        <label for="menuname">Name</label>
-                        <input type="text" name="menuname" id="menuname" class="form-control" required>
-                        <input type="hidden" name="menuid" id="menuid" class="form-control" required>
+                    <div class="col-lg-12 col-md-12">
+                        <label for="wfgroupname">Workflow Approval Group</label>
+                        <input type="text" name="wfgroupname" id="wfgroupname" class="form-control" required>
+                        <input type="hidden" name="wfgroupid" id="wfgroupid" class="form-control" required>
                     </div> 
                 </div>
             </div>
@@ -165,37 +266,44 @@
     </form>
 </div>
 
-<div class="modal fade" id="modal-add-menu">
-    <div class="modal-dialog modal-lg">
-        <form action="{{ url('config/menus/savegroup') }}" method="post">
+<div class="modal fade" id="modal-add-assignment">
+    <div class="modal-dialog modal-xl">
+        <form action="{{ url('config/workflow/saveassignment') }}" method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                <h4 class="modal-title">Add Menu Group</h4>
+                <h4 class="modal-title">Add Workflow Assignment</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-lg-12">
-                            <div class="form-group">
-                                <label for="groupname">Menu Group Name</label>
-                                <input type="text" name="groupname" class="form-control">
-                            </div>
-                        </div> 
-                        <div class="col-lg-8 col-md-12">
-                            <div class="form-group">
-                                <label for="groupicon">Menu Group Icon</label>
-                                <input type="text" name="groupicon" class="form-control">
-                            </div>
-                        </div> 
-                        <div class="col-lg-4 col-md-12">
-                            <div class="form-group">
-                                <label for="displayidx">Menu Group Display Index</label>
-                                <input type="number" name="displayidx" class="form-control">
-                            </div>
-                        </div> 
+                        <table class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
+                            <thead>
+                                <th>Workflow Group</th>
+                                <th>Approval Level</th>
+                                <th>Workflow Categories</th>
+                                <th>Creator</th>
+                                <th>Approver</th>
+                                <th style="width:50px; text-align:center;">
+                                    <button type="button" class="btn btn-success btn-sm btn-add-new-assignment">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </th>
+                            </thead>
+                            <tbody id="tbl-new-assignment-body">
+
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4"></td>
+                                    <td>
+                                        
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>  
                     </div>
                 </div>
                 <div class="modal-footer justify-content-between">
@@ -207,27 +315,23 @@
     </div>
 </div>
 
-<div class="modal fade" id="modal-edit-group">
-    <form action="{{ url('config/menus/updategroup') }}" method="post">
+<div class="modal fade" id="modal-edit-categories">
+    <form action="{{ url('config/workflow/updatecategories') }}" method="post">
         @csrf
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title">Edit Menu Group</h4>
+              <h4 class="modal-title">Edit Workflow Approval Category</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-lg-6 col-md-12">
-                        <label for="egroupname">Group Name</label>
-                        <input type="text" name="egroupname" id="egroupname" class="form-control" required>
-                        <input type="hidden" name="egroupid" id="egroupid" class="form-control" required>
-                    </div> 
-                    <div class="col-lg-6 col-md-12">
-                        <label for="egroupidx">Group Index</label>
-                        <input type="number" name="egroupidx" id="egroupidx" class="form-control" required>
+                    <div class="col-lg-12 col-md-12">
+                        <label for="wfcategories">Workflow Approval Category</label>
+                        <input type="text"   name="wfcategories" id="wfcategories" class="form-control" required>
+                        <input type="hidden" name="wfcategoriesid" id="wfcategoriesid" class="form-control" required>
                     </div> 
                 </div>
             </div>
@@ -239,6 +343,7 @@
         </div>
     </form>
 </div>
+
 @endsection
 
 @section('additional-js')
@@ -246,33 +351,104 @@
     $(document).ready(function(){
         //loadRoleUsers();
         //loadRoleMenus();
-        $('#tbl-menu, #tbl-menu-group').DataTable();
+        $('#tbl-categories, #tbl-worflow-assignment, #tbl-menu-group').DataTable();
+
+        $('.btn-add-categories').on('click', function(){
+            $('#modal-add-categories').modal('show');
+        });
 
         $('.btn-add-user').on('click', function(e){
             $('#modal-add-user').modal('show');
         });
 
-        $('.btn-add-menu').on('click', function(e){
-            $('#modal-add-menu').modal('show');
+        $('.btn-add-assignment').on('click', function(e){
+            $('#modal-add-assignment').modal('show');
         });
 
-        $('.btn-edit-menu').on('click', function(e){
+        $('.btn-edit-workflow-categories').on('click', function(e){
             var _mndata = $(this).data();
             console.log(_mndata)
-            $('#menuname').val(_mndata.menuname);
-            $('#menuid').val(_mndata.menuid);
-            $('#menuroute').val(_mndata.menuroute);
-            $('#modal-edit-menu').modal('show');
+            $('#wfcategoriesid').val(_mndata.workflow_categoryid);
+            $('#wfcategories').val(_mndata.workflow_category);
+            $('#modal-edit-categories').modal('show');
         });
 
         $('.btn-edit-group').on('click', function(e){
-            var _grpdata = $(this).data();
-            console.log(_grpdata)
-            $('#egroupname').val(_grpdata.groupname);
-            $('#egroupid').val(_grpdata.groupid);
-            $('#egroupidx').val(_grpdata.index);
+            var _mndata = $(this).data();
+            console.log(_mndata)
+            $('#wfgroupname').val(_mndata.workflow_group);
+            $('#wfgroupid').val(_mndata.workflow_groupid);
             $('#modal-edit-group').modal('show');
         });
+
+        $('.btn-add-new-assignment').on('click', function(){
+            $('#tbl-new-assignment-body').append(`
+                <tr>
+                    <td>
+                        <select name="wfgroups[]" class="form-control">
+                            @foreach($groups as $key => $row)
+                                <option value="{{ $row->id }}">{{ $row->workflow_group }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" name="wflevels[]" class="form-control" required>
+                    </td>
+                    <td>
+                        <select name="wfctegrs[]" class="form-control">
+                            @foreach($ctgrs as $key => $row)
+                                <option value="{{ $row->id }}">{{ $row->workflow_category }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <select name="wfcreator[]" class="form-control">
+                            @foreach($users as $key => $row)
+                                <option value="{{ $row->id }}">{{ $row->name }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <select name="wfapprov[]" class="form-control">
+                            @foreach($users as $key => $row)
+                                <option value="{{ $row->id }}">{{ $row->name }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td style="text-align:center;">
+                        <button type="button" class="btn btn-danger btn-sm btnRemove">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `);
+
+            $('.btnRemove').on('click', function(e){
+                e.preventDefault();
+                $(this).closest("tr").remove();
+            });
+        });
+
+        $('.btn-add-new-categories').on('click', function(){
+            $('#tbl-new-categories-body').append(`
+                <tr>
+                    <td>
+                        <input type="text" name="approvalcategories[]" class="form-control"/>
+                    </td>
+                    <td style="text-align:center;">
+                        <button type="button" class="btn btn-danger btn-sm btnRemove">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `);
+
+            $('.btnRemove').on('click', function(e){
+                e.preventDefault();
+                $(this).closest("tr").remove();
+            });
+        });
+        
 
         $('.btn-add-new-menu').on('click', function(){
             $('#tbl-new-menu-body').append(`

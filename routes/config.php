@@ -56,8 +56,17 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['prefix' => '/config/workflow'], function () {
-        Route::get('/',                 'Config\WorkflowController@index')->middleware('checkAuth:config/workflow');
-        Route::post('/savegroup',       'Config\WorkflowController@saveGroup')->middleware('checkAuth:config/workflow');
-        Route::get('/deletegroup/{id}', 'Config\WorkflowController@deleteGroup')->middleware('checkAuth:config/workflow');
+        Route::get('/',                   'Config\WorkflowController@index')->middleware('checkAuth:config/workflow');
+        Route::post('/savecategories',    'Config\WorkflowController@saveCategories')->middleware('checkAuth:config/workflow');
+        Route::post('/updatecategories',  'Config\WorkflowController@updateCategories')->middleware('checkAuth:config/workflow');
+        Route::get('/deletecategories/{id}',   'Config\WorkflowController@deleteCategories')->middleware('checkAuth:config/workflow');
+
+        Route::post('/savegroup',         'Config\WorkflowController@saveGroup')->middleware('checkAuth:config/workflow');
+        Route::post('/updategroup',       'Config\WorkflowController@updateGroup')->middleware('checkAuth:config/workflow');
+        Route::get('/deletegroup/{id}',   'Config\WorkflowController@deleteGroup')->middleware('checkAuth:config/workflow');
+
+        Route::post('/saveassignment',    'Config\WorkflowController@saveAssignment')->middleware('checkAuth:config/workflow');
+
+        Route::get('/deleteassignment/{p1}/{p2}/{p3}/{p4}/{p5}',   'Config\WorkflowController@deleteAssignment')->middleware('checkAuth:config/workflow');
     });
 });
