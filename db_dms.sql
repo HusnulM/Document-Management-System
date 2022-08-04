@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 03, 2022 at 06:09 PM
+-- Generation Time: Aug 04, 2022 at 12:06 PM
 -- Server version: 8.0.29
 -- PHP Version: 7.4.27
 
@@ -49,6 +49,26 @@ CREATE TABLE `activities` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `document_id` int UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dcn_nriv`
+--
+
+CREATE TABLE `dcn_nriv` (
+  `year` int NOT NULL,
+  `current_number` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
+  `createdon` date NOT NULL,
+  `createdby` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `dcn_nriv`
+--
+
+INSERT INTO `dcn_nriv` (`year`, `current_number`, `createdon`, `createdby`) VALUES
+(2022, '1', '2022-08-04', 'husnulmub@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -124,17 +144,76 @@ INSERT INTO `doctypes` (`id`, `doctype`, `workflow_group`, `createdon`, `created
 
 CREATE TABLE `documents` (
   `id` int UNSIGNED NOT NULL,
-  `dcp_number` varchar(40) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `dcn_number` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `document_type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `document_level` int DEFAULT NULL,
+  `document_number` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `document_title` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci,
-  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `workflow_group` int DEFAULT NULL,
+  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Open',
+  `revision_number` int NOT NULL DEFAULT '0',
   `effectivity_date` datetime DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `createdby` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `updatedby` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL
+  `updatedby` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `documents`
+--
+
+INSERT INTO `documents` (`id`, `dcn_number`, `document_type`, `document_level`, `document_number`, `document_title`, `description`, `workflow_group`, `status`, `revision_number`, `effectivity_date`, `created_at`, `updated_at`, `createdby`, `updatedby`) VALUES
+(1, 'DCN-22-000001', '1', 1, '1', 'Technical Service Procedure', '<p>Note: ganti&nbsp;<code>monokai_sublime</code>&nbsp;dengan nama&nbsp;<em>theme</em>&nbsp;yang kamu inginkan. Adapun nama&nbsp;<em>theme</em>nya bisa anda temui pada&nbsp;<em>directory</em>&nbsp;:&nbsp;<code>ckeditor/plugins/codesnippet/lib/highlight/styles</code></p>\r\n\r\n<h3>Fixed Codesnippet</h3>\r\n\r\n<p>Saat mencoba mengedit&nbsp;<em>code</em>&nbsp;yang yang telah disimpan didatabase, maka apabila terdapat&nbsp;<em>source code</em>&nbsp;berbentuk HTML, secara otomatis akan di-<em>load</em>&nbsp;layaknya&nbsp;<em>browser</em>&nbsp;membaca&nbsp;<em>code</em>&nbsp;HTML. Misal: kamu memiliki&nbsp;<em>code</em>&nbsp;berupa&nbsp;<em>form input</em>, maka yang dihasilkan adalah sebuah kolom untuk meng-<em>input</em>. Hal ini tentu saja akan membuat kamu bekerja untuk kedua kalinya merapikan&nbsp;<em>code</em>&nbsp;tersebut agar nantinya yang ditampilkan tetap berupa&nbsp;<em>source code</em>. Maka untuk mengatasinya, silahkan gunakan:</p>', 3, 'Open', 0, '2022-08-04 00:00:00', '2022-08-04 02:08:07', NULL, 'husnulmub@gmail.com', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `document_affected_areas`
+--
+
+CREATE TABLE `document_affected_areas` (
+  `dcn_number` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `docarea` int NOT NULL,
+  `createdon` datetime NOT NULL,
+  `createdby` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `document_affected_areas`
+--
+
+INSERT INTO `document_affected_areas` (`dcn_number`, `docarea`, `createdon`, `createdby`) VALUES
+('DCN-22-000001', 1, '2022-08-04 09:08:07', 'husnulmub@gmail.com'),
+('DCN-22-000001', 2, '2022-08-04 09:08:07', 'husnulmub@gmail.com');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `document_approvals`
+--
+
+CREATE TABLE `document_approvals` (
+  `id` int NOT NULL,
+  `dcn_number` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `approval_version` int NOT NULL,
+  `workflow_group` int NOT NULL,
+  `approver_level` int NOT NULL,
+  `approver_id` int NOT NULL,
+  `approval_status` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'N',
+  `approval_remark` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `approval_date` datetime DEFAULT NULL,
+  `createdon` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `document_approvals`
+--
+
+INSERT INTO `document_approvals` (`id`, `dcn_number`, `approval_version`, `workflow_group`, `approver_level`, `approver_id`, `approval_status`, `approval_remark`, `approval_date`, `createdon`) VALUES
+(1, 'DCN-22-000001', 1, 3, 1, 3, 'N', NULL, NULL, '2022-08-04 09:08:07'),
+(2, 'DCN-22-000001', 1, 3, 2, 1, 'N', NULL, NULL, '2022-08-04 09:08:07');
 
 -- --------------------------------------------------------
 
@@ -144,14 +223,24 @@ CREATE TABLE `documents` (
 
 CREATE TABLE `document_attachments` (
   `id` bigint UNSIGNED NOT NULL,
-  `document_id` int NOT NULL,
+  `dcn_number` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `doc_version` int NOT NULL,
   `efile` text COLLATE utf8mb4_unicode_ci,
   `remark` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `createdby` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `updatedby` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL
+  `updatedby` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `document_attachments`
+--
+
+INSERT INTO `document_attachments` (`id`, `dcn_number`, `doc_version`, `efile`, `remark`, `created_at`, `updated_at`, `createdby`, `updatedby`) VALUES
+(1, 'DCN-22-000001', 1, 'DCN-22-000001-user-img-background.jpg', NULL, '2022-08-04 02:08:07', NULL, 'husnulmub@gmail.com', NULL),
+(2, 'DCN-22-000001', 1, 'DCN-22-000001-ZCIMG.bmp', NULL, '2022-08-04 02:08:07', NULL, 'husnulmub@gmail.com', NULL),
+(3, 'DCN-22-000001', 1, 'DCN-22-000001-ZCIMG2.bmp', NULL, '2022-08-04 02:08:07', NULL, 'husnulmub@gmail.com', NULL);
 
 -- --------------------------------------------------------
 
@@ -245,7 +334,8 @@ INSERT INTO `menuroles` (`menuid`, `roleid`, `created_at`, `updated_at`, `create
 (6, 1, '2022-07-26 02:21:32', NULL, 'sys-admin', ''),
 (6, 2, '2022-07-26 03:07:26', NULL, 'husnulmub@gmail.com', NULL),
 (7, 1, '2022-07-26 18:07:53', NULL, 'husnulmub@gmail.com', NULL),
-(15, 1, '2022-08-02 19:08:40', NULL, 'husnulmub@gmail.com', NULL);
+(15, 1, '2022-08-02 19:08:40', NULL, 'husnulmub@gmail.com', NULL),
+(16, 1, '2022-08-03 21:08:42', NULL, 'husnulmub@gmail.com', NULL);
 
 -- --------------------------------------------------------
 
@@ -270,16 +360,17 @@ CREATE TABLE `menus` (
 --
 
 INSERT INTO `menus` (`id`, `name`, `route`, `menugroup`, `menu_idx`, `created_at`, `updated_at`, `createdby`, `updatedby`) VALUES
-(1, 'Document Approval', 'config/workflow', 2, 4, '2022-07-26 02:12:52', NULL, 'sys-admin', 'husnulmub@gmail.com'),
+(1, 'Workflow Approval', 'config/workflow', 2, 4, '2022-07-26 02:12:52', NULL, 'sys-admin', 'husnulmub@gmail.com'),
 (2, 'Document Type', 'master/doctype', 1, 1, '2022-07-26 02:12:52', NULL, 'sys-admin', ''),
 (3, 'Document Area', 'master/docarea', 1, 2, '2022-07-26 02:12:52', NULL, 'sys-admin', ''),
 (4, 'Users', 'config/users', 2, 1, '2022-07-26 02:12:52', NULL, 'sys-admin', ''),
 (5, 'Roles', 'config/roles', 2, 3, '2022-07-26 02:12:52', NULL, 'sys-admin', ''),
-(6, 'Document', 'transaction/document', 3, 1, '2022-07-26 02:12:52', NULL, 'sys-admin', ''),
+(6, 'Create Document', 'transaction/document', 3, 1, '2022-07-26 02:12:52', NULL, 'sys-admin', 'husnulmub@gmail.com'),
 (7, 'Menus', 'config/menus', 2, 2, '2022-07-26 02:12:52', NULL, 'sys-admin', 'husnulmub@gmail.com'),
 (13, 'Create PR', 'proc/pr', 5, 1, '2022-07-27 02:07:43', NULL, 'husnulmub@gmail.com', NULL),
 (14, 'Create PO', 'proc/po', 5, 2, '2022-07-27 02:07:43', NULL, 'husnulmub@gmail.com', NULL),
-(15, 'Document Level', 'master/doclevel', 1, 3, '2022-08-02 19:08:22', NULL, 'husnulmub@gmail.com', NULL);
+(15, 'Document Level', 'master/doclevel', 1, 3, '2022-08-02 19:08:22', NULL, 'husnulmub@gmail.com', NULL),
+(16, 'Document Approval', 'transaction/docapproval', 3, 2, '2022-08-03 21:08:28', NULL, 'husnulmub@gmail.com', NULL);
 
 --
 -- Triggers `menus`
@@ -623,6 +714,12 @@ ALTER TABLE `activities`
   ADD KEY `activities_created_by_foreign` (`created_by`);
 
 --
+-- Indexes for table `dcn_nriv`
+--
+ALTER TABLE `dcn_nriv`
+  ADD PRIMARY KEY (`year`);
+
+--
 -- Indexes for table `docareas`
 --
 ALTER TABLE `docareas`
@@ -644,6 +741,18 @@ ALTER TABLE `doctypes`
 -- Indexes for table `documents`
 --
 ALTER TABLE `documents`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `document_affected_areas`
+--
+ALTER TABLE `document_affected_areas`
+  ADD PRIMARY KEY (`dcn_number`,`docarea`);
+
+--
+-- Indexes for table `document_approvals`
+--
+ALTER TABLE `document_approvals`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -765,13 +874,19 @@ ALTER TABLE `doctypes`
 -- AUTO_INCREMENT for table `documents`
 --
 ALTER TABLE `documents`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `document_approvals`
+--
+ALTER TABLE `document_approvals`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `document_attachments`
 --
 ALTER TABLE `document_attachments`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -795,7 +910,7 @@ ALTER TABLE `menugroups`
 -- AUTO_INCREMENT for table `menus`
 --
 ALTER TABLE `menus`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `migrations`

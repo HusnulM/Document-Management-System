@@ -136,10 +136,10 @@
   </footer>
 </div>
 <!-- ./wrapper -->
-
 <!-- REQUIRED SCRIPTS -->
 <!-- jQuery -->
 <script src="{{ ('/assets/plugins/jquery/jquery.min.js') }}"></script>
+
 <!-- Bootstrap -->
 <script src="{{ ('/assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- overlayScrollbars -->
@@ -161,6 +161,9 @@
 <!-- AdminLTE App -->
 <script src="{{ ('/assets/dist/js/adminlte.js') }}"></script>
 
+
+
+<!-- <script src="//cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script> -->
 <!-- PAGE PLUGINS -->
 <!-- jQuery Mapael -->
 <!-- <script src="{{ ('/assets/plugins/jquery-mousewheel/jquery.mousewheel.js') }}"></script>

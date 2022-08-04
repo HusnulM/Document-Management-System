@@ -3,6 +3,16 @@
 @section('title', 'Document Approval')
 
 @section('additional-css')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style type="text/css">
+        .select2-container {
+            display: block
+        }
+
+        .select2-container .select2-selection--single {
+            height: 36px;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -347,6 +357,7 @@
 @endsection
 
 @section('additional-js')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function(){
         //loadRoleUsers();
@@ -385,7 +396,7 @@
             $('#tbl-new-assignment-body').append(`
                 <tr>
                     <td>
-                        <select name="wfgroups[]" class="form-control">
+                        <select name="wfgroups[]" class="form-control wfgroups">
                             @foreach($groups as $key => $row)
                                 <option value="{{ $row->id }}">{{ $row->workflow_group }}</option>
                             @endforeach
@@ -395,21 +406,21 @@
                         <input type="number" name="wflevels[]" class="form-control" required>
                     </td>
                     <td>
-                        <select name="wfctegrs[]" class="form-control">
+                        <select name="wfctegrs[]" class="form-control wfctegrs">
                             @foreach($ctgrs as $key => $row)
                                 <option value="{{ $row->id }}">{{ $row->workflow_category }}</option>
                             @endforeach
                         </select>
                     </td>
                     <td>
-                        <select name="wfcreator[]" class="form-control">
+                        <select name="wfcreator[]" class="form-control wfcreator">
                             @foreach($users as $key => $row)
                                 <option value="{{ $row->id }}">{{ $row->name }}</option>
                             @endforeach
                         </select>
                     </td>
                     <td>
-                        <select name="wfapprov[]" class="form-control">
+                        <select name="wfapprov[]" class="form-control wfapprov">
                             @foreach($users as $key => $row)
                                 <option value="{{ $row->id }}">{{ $row->name }}</option>
                             @endforeach
@@ -422,6 +433,8 @@
                     </td>
                 </tr>
             `);
+
+            $(".wfgroups, .wfctegrs, .wfapprov, .wfcreator").select2();
 
             $('.btnRemove').on('click', function(e){
                 e.preventDefault();

@@ -23,6 +23,73 @@ function userSubMenu(){
     return $mnGroups;
 }
 
+function generateDcnNumber(){
+    $dcnNumber = '';
+    $getdata = DB::table('dcn_nriv')->where('year', date('Y'))->first();
+    if($getdata){
+        DB::beginTransaction();
+        try{
+            $leadingZero = '';
+            if(strlen($getdata->current_number) == 5){
+                $leadingZero = '0';
+            }elseif(strlen($getdata->current_number) == 4){
+                $leadingZero = '00';
+            }elseif(strlen($getdata->current_number) == 3){
+                $leadingZero = '000';
+            }elseif(strlen($getdata->current_number) == 2){
+                $leadingZero = '0000';
+            }elseif(strlen($getdata->current_number) == 1){
+                $leadingZero = '00000';
+            }
+
+            $lastnum = ($getdata->current_number*1) + 1;
+
+            if($leadingZero == ''){
+                $dcnNumber = 'DCN-'. substr($getdata->year,2) .'-'. $lastnum; 
+            }else{
+                $dcnNumber = 'DCN-'. substr($getdata->year,2) .'-'. $leadingZero . $lastnum; 
+            }
+
+            DB::table('dcn_nriv')->where('year',$getdata->year)->update([
+                'current_number' => $lastnum
+            ]);
+
+            DB::commit();
+            return $dcnNumber;
+        }catch(\Exception $e){
+            DB::rollBack();
+            return null;
+        }
+    }else{
+        $dcnNumber = 'DCN-'.substr(date('Y'),2).'-000001';
+        DB::beginTransaction();
+        try{
+            DB::table('dcn_nriv')->insert([
+                'year' => date('Y'),
+                'current_number' => '1',
+                'createdon'       => date('Y-m-d H:m:s'),
+                'createdby'       => Auth::user()->email ?? Auth::user()->username
+            ]);
+            DB::commit();
+            return $dcnNumber;
+        }catch(\Exception $e){
+            DB::rollBack();
+            return null;
+        }
+    }
+    
+}
+
+function getWfGroup($doctype){
+
+    $wfgroup = DB::table('doctypes')->where('id', $doctype)->first();
+    if($wfgroup){
+        return $wfgroup->workflow_group;
+    }else{
+        return 0;
+    }
+}
+
 function groupOpen($groupid){
     $routeName = \Route::current()->uri();
     $selectMenu = DB::table('menus')->where('route', $routeName)->first();

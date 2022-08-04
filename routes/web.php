@@ -31,8 +31,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('logout2',    'HomeController@logout')->name('logout');
     });
 
-    Route::group(['prefix' => '/transaction'], function () {
-        Route::get('/document',             'Transaction\DocumentController@index')->middleware('checkAuth:transaction/document');
+    Route::group(['prefix' => '/transaction/document'], function () {
+        Route::get('/',             'Transaction\DocumentController@index')->middleware('checkAuth:transaction/document');
+        Route::post('/save',        'Transaction\DocumentController@save')->middleware('checkAuth:transaction/document');
     });
 
     // Route::group(['prefix' => '/config/users'], function () {
