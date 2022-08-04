@@ -26,6 +26,16 @@
 
   @yield('additional-css')
 
+  <!-- <style>
+    .card-header {
+      background-color: #95a9d2 !important;
+      color:white !important;
+    }
+    .navbar-dark {
+      background-color: #95a9d2 !important;
+      border-color: #95a9d2 !important;
+    }
+  </style> -->
   <script>
     var base_url = window.location.origin;
   </script>

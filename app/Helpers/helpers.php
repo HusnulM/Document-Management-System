@@ -23,6 +23,12 @@ function userSubMenu(){
     return $mnGroups;
 }
 
+function getLocalDatabaseDateTime(){
+    // SELECT now()
+    $localDateTime = DB::select('SELECT fGetDatabaseLocalDatetime() as lcldate');
+    return $localDateTime[0]->lcldate;
+}
+
 function generateDcnNumber(){
     $dcnNumber = '';
     $getdata = DB::table('dcn_nriv')->where('year', date('Y'))->first();

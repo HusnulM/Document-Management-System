@@ -40,7 +40,7 @@
                 @foreach(userSubMenu() as $detailMenu)
                   @if($headMenu->menugroup === $detailMenu->menugroup)
                   <li class="nav-item">
-                    <a href="{{ url($detailMenu->route) }}" class="nav-link {{ active($detailMenu->route) }}">
+                    <a href="{{ url($detailMenu->route) }}" class="nav-link {{ active($detailMenu->route) }}" style="{{ active($detailMenu->route) == 'active' ? '':'background-color: rgb(15 14 14 / 90%);'}}">
                       <i class="far fa-circle nav-icon"></i>
                       <p>{{ $detailMenu->menu_desc }}</p>
                     </a>

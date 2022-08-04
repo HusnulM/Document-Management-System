@@ -21,7 +21,7 @@ class DocumentController extends Controller
         // return public_path();
         DB::beginTransaction();
         try{
-            $this->validate($request, [
+            $this->validate($req, [
 
                 'docfiles'   => 'required',
                 // 'filename.*' => 'mimes:doc,pdf,docx,zip'
@@ -40,7 +40,7 @@ class DocumentController extends Controller
                     'dcn_number' => $dcnNumber,
                     'doc_version'=> 1,
                     'efile'      => $filename,
-                    'created_at' => date('Y-m-d H:m:s'),
+                    'created_at' => getLocalDatabaseDateTime(),
                     'createdby'  => Auth::user()->email ?? Auth::user()->username
                 );
                 array_push($insertFiles, $upfiles);
@@ -59,7 +59,7 @@ class DocumentController extends Controller
                 'description'     => $req['docremark'],
                 'workflow_group'  => $wfgroup,
                 'effectivity_date'=> $req['effectivedate'],
-                'created_at'      => date('Y-m-d H:m:s'),
+                'created_at'      => getLocalDatabaseDateTime(),
                 'createdby'       => Auth::user()->email ?? Auth::user()->username
             ]);
 
@@ -71,7 +71,7 @@ class DocumentController extends Controller
                 $areas = array(
                     'dcn_number'        => $dcnNumber,
                     'docarea'           => $docareas[$i],
-                    'createdon'         => date('Y-m-d H:m:s'),
+                    'createdon'         => getLocalDatabaseDateTime(),
                     'createdby'         => Auth::user()->email ?? Auth::user()->username
                 );
                 array_push($insertAreas, $areas);
@@ -90,7 +90,7 @@ class DocumentController extends Controller
                     'workflow_group'    => $wfgroup,
                     'approver_level'    => $row->approval_level,
                     'approver_id'       => $row->approverid,
-                    'createdon'         => date('Y-m-d H:m:s'),
+                    'createdon'         => getLocalDatabaseDateTime(),
                     // 'createdby'         => Auth::user()->email ?? Auth::user()->username
                 );
                 array_push($insertApproval, $approvals);

@@ -36,6 +36,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/save',        'Transaction\DocumentController@save')->middleware('checkAuth:transaction/document');
     });
 
+    Route::group(['prefix' => '/transaction/docapproval'], function () {
+        Route::get('/',             'Transaction\DocumentApprovalController@index')->middleware('checkAuth:transaction/docapproval');
+        Route::post('/approve',     'Transaction\DocumentApprovalController@approve')->middleware('checkAuth:transaction/docapproval');
+    });
+
     // Route::group(['prefix' => '/config/users'], function () {
     //     Route::get('/',                       'Config\UserController@index')->middleware('checkAuth:config/users');
     //     Route::get('/create',                 'Config\UserController@create')->middleware('checkAuth:config/users');
