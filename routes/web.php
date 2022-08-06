@@ -42,6 +42,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/approve/detail/{id}',  'Transaction\DocumentApprovalController@approveDetail')->middleware('checkAuth:transaction/docapproval');
     });
 
+    Route::get('/_files/{dir?}/{file?}',    'Transaction\DocumentApprovalController@showFile')->name('files.showfile');
+
     // Route::group(['prefix' => '/config/users'], function () {
     //     Route::get('/',                       'Config\UserController@index')->middleware('checkAuth:config/users');
     //     Route::get('/create',                 'Config\UserController@create')->middleware('checkAuth:config/users');

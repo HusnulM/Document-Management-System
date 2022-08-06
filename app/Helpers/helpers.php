@@ -29,6 +29,28 @@ function getLocalDatabaseDateTime(){
     return $localDateTime[0]->lcldate;
 }
 
+function formatDate($date, $format = "d/m/Y")
+{
+    if (is_null($date)) {
+        return '-';
+    }
+    return date($format, strtotime($date));
+}
+
+/**
+ * Format the datetime
+ * @param $dateTime
+ * @param string $format default= 'd/m/Y h:i A'
+ * @return false|string
+ */
+function formatDateTime($dateTime, $format = "d/m/Y h:i A")
+{
+    if (is_null($dateTime)) {
+        return '-';
+    }
+    return ($dateTime) ? date($format, strtotime($dateTime)) : $dateTime;
+}
+
 function generateDcnNumber(){
     $dcnNumber = '';
     $getdata = DB::table('dcn_nriv')->where('year', date('Y'))->first();
