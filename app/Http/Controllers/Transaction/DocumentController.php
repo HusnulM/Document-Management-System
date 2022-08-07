@@ -33,22 +33,8 @@ class DocumentController extends Controller
             $dcnNumber = generateDcnNumber();
             $wfgroup   = getWfGroup($req['doctype']);
 
+            $docHistory = array();
             $insertFiles = array();
-            foreach ($files as $efile) {
-                $filename = $dcnNumber.'-'.$efile->getClientOriginalName();
-                $upfiles = array(
-                    'dcn_number' => $dcnNumber,
-                    'doc_version'=> 1,
-                    'efile'      => $filename,
-                    'created_at' => getLocalDatabaseDateTime(),
-                    'createdby'  => Auth::user()->email ?? Auth::user()->username
-                );
-                array_push($insertFiles, $upfiles);
-
-                $efile->move(public_path().'/files/', $filename);  
-            }
-
-            // return $insertFiles;
 
             DB::table('documents')->insert([
                 'dcn_number'      => $dcnNumber,
@@ -63,6 +49,43 @@ class DocumentController extends Controller
                 'createdby'       => Auth::user()->email ?? Auth::user()->username
             ]);
 
+            // document_historys
+            
+            $insertHistory = array(
+                'dcn_number'        => $dcnNumber,
+                'activity'          => 'New Document Created : ' . $req['doctitle'],
+                'createdby'         => Auth::user()->email ?? Auth::user()->username,
+                'createdon'         => getLocalDatabaseDateTime(),
+                'updatedon'         => getLocalDatabaseDateTime()
+            );
+            array_push($docHistory, $insertHistory);
+
+            foreach ($files as $efile) {
+                $filename = $dcnNumber.'-'.$efile->getClientOriginalName();
+                $upfiles = array(
+                    'dcn_number' => $dcnNumber,
+                    'doc_version'=> 1,
+                    'efile'      => $filename,
+                    'created_at' => getLocalDatabaseDateTime(),
+                    'createdby'  => Auth::user()->email ?? Auth::user()->username
+                );
+                array_push($insertFiles, $upfiles);
+
+                $efile->move(public_path().'/files/', $filename);  
+
+                $insertHistory = array(
+                    'dcn_number'        => $dcnNumber,
+                    'activity'          => 'Document Attachment Created : ' . $filename,
+                    'createdby'         => Auth::user()->email ?? Auth::user()->username,
+                    'createdon'         => getLocalDatabaseDateTime(),
+                    'updatedon'         => getLocalDatabaseDateTime()
+                );
+                array_push($docHistory, $insertHistory);
+            }
+
+            // return $insertFiles;
+
+            
 
             // Document Affected Areas | document_affected_areas
             $docareas = $req['docareas'];
@@ -99,6 +122,8 @@ class DocumentController extends Controller
 
             // Insert Attchment Documents
             insertOrUpdate($insertFiles,'document_attachments');
+
+            insertOrUpdate($docHistory,'document_historys');
             
 
             DB::commit();

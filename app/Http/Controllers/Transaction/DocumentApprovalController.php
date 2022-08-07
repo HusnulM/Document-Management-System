@@ -40,9 +40,22 @@ class DocumentApprovalController extends Controller
                     ->where('dcn_number', $documents->dcn_number)
                     ->orderBy('approver_level', 'asc')
                     ->get();
-        // return $areas;
+
+        $docHistory = DB::table('v_document_historys')->where('dcn_number', $documents->dcn_number)->get();
+        $docHistorydateGroup = DB::table('v_document_historys')
+                ->select('dcn_number', 'created_date')->distinct()    
+                ->orderBy('created_date', 'asc')
+                ->where('dcn_number', $documents->dcn_number)->get();
+        // return $docHistorydateGroup;
         // return $documents;
-        return view('transaction.documentapproval.detail', ['document' => $documents, 'attachments' => $attachments, 'areas' => $areas, 'approvals' => $approvalList]);   
+        return view('transaction.documentapproval.detail', [
+            'document'    => $documents, 
+            'attachments' => $attachments, 
+            'areas'       => $areas, 
+            'approvals'   => $approvalList,
+            'dochistory'     => $docHistory,
+            'dochistorydate' => $docHistorydateGroup
+        ]);   
     }
 
     public function showFile(Request $request, $dir = 'original', $file = null)
@@ -64,7 +77,59 @@ class DocumentApprovalController extends Controller
         // return response()->file($file, ['Content-disposition' => $attachment.'; filename="' . $name . '"']);
     }
 
-    public function approve(){
+    public function approveDocument(Request $req){
+        // return $req;
+        DB::beginTransaction();
+        try{
+            $docHistory = array();
+
+            DB::table('document_approvals')
+            ->where('dcn_number',  $req['dcnNumber'])
+            ->where('approver_id', Auth::user()->id)
+            ->update([
+                'approval_status' => $req['action'],
+                'approval_remark' => $req['approvernote'],
+                'approval_date'   => getLocalDatabaseDateTime()
+            ]);
+
+            $docStat = '';
+            if($req['action'] === "A"){
+                $docStat = 'Document Approved';
+            }elseif($req['action'] === "R"){
+                $docStat = 'Document Rejected';
+            }
+
+            $insertHistory = array(
+                'dcn_number'        => $req['dcnNumber'],
+                'activity'          => $docStat,
+                'createdby'         => Auth::user()->email ?? Auth::user()->username,
+                'createdon'         => getLocalDatabaseDateTime(),
+                'updatedon'         => getLocalDatabaseDateTime()
+            );
+            array_push($docHistory, $insertHistory);
+            insertOrUpdate($docHistory,'document_historys');
+
+            DB::commit();
+
+            $result = array(
+                'msgtype' => '200',
+                'message' => 'Success'
+            );
+
+            return $result;
+        }catch(\Exception $e){
+            DB::rollBack();
+            // return Redirect::to("/transaction/document")->withError($e->getMessage());
+            $result = array(
+                'msgtype' => '401',
+                'message' => $e->getMessage()
+            );
+
+            return $result;
+        }
+    }
+
+    public function rejectDocument(){
 
     }
 }
