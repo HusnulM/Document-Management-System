@@ -29,7 +29,7 @@ function getLocalDatabaseDateTime(){
     return $localDateTime[0]->lcldate;
 }
 
-function formatDate($date, $format = "d/m/Y")
+function formatDate($date, $format = "d-m-Y")
 {
     if (is_null($date)) {
         return '-';
@@ -43,7 +43,7 @@ function formatDate($date, $format = "d/m/Y")
  * @param string $format default= 'd/m/Y h:i A'
  * @return false|string
  */
-function formatDateTime($dateTime, $format = "d/m/Y h:i A")
+function formatDateTime($dateTime, $format = "d-m-Y h:i A")
 {
     if (is_null($dateTime)) {
         return '-';
@@ -137,7 +137,7 @@ function currentURL(){
 }
 
 function active($partialUrl){
-    // dd($partialUrl);
+    // return $partialUrl;
     return request()->is("*".$partialUrl."*") ? 'active' : '';
 }
 

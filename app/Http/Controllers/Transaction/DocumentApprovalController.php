@@ -18,7 +18,8 @@ class DocumentApprovalController extends Controller
         // return getLocalDatabaseDateTime();
         $documents  = DB::table('v_document_approvals')
                       ->where('approver_id', Auth::user()->id)
-                      ->where('approval_status', 'N')
+                    //   ->where('approval_status', 'N')
+                      ->where('is_active', 'Y')
                       ->orderBy('created_at', 'DESC')
                       ->get();
         return view('transaction.documentapproval.index', ['documents' => $documents]);
@@ -28,6 +29,7 @@ class DocumentApprovalController extends Controller
         $documents  = DB::table('v_documents')
                       ->where('id', $id)
                       ->first();
+
         $attachments = DB::table('document_attachments')->where('dcn_number', $documents->dcn_number)->get();
 
         $areas = DB::table('document_affected_areas')
@@ -42,10 +44,16 @@ class DocumentApprovalController extends Controller
                     ->get();
 
         $docHistory = DB::table('v_document_historys')->where('dcn_number', $documents->dcn_number)->get();
+
         $docHistorydateGroup = DB::table('v_document_historys')
                 ->select('dcn_number', 'created_date')->distinct()    
                 ->orderBy('created_date', 'asc')
                 ->where('dcn_number', $documents->dcn_number)->get();
+
+        $isApprovedbyUser = DB::table('document_approvals')
+                ->where('dcn_number',  $documents->dcn_number)
+                ->where('approver_id', Auth::user()->id)
+                ->first();
         // return $docHistorydateGroup;
         // return $documents;
         return view('transaction.documentapproval.detail', [
@@ -54,7 +62,8 @@ class DocumentApprovalController extends Controller
             'areas'       => $areas, 
             'approvals'   => $approvalList,
             'dochistory'     => $docHistory,
-            'dochistorydate' => $docHistorydateGroup
+            'dochistorydate' => $docHistorydateGroup,
+            'isApprovedbyUser' => $isApprovedbyUser
         ]);   
     }
 
@@ -77,6 +86,25 @@ class DocumentApprovalController extends Controller
         // return response()->file($file, ['Content-disposition' => $attachment.'; filename="' . $name . '"']);
     }
 
+    public function getNextApproval($dcnNum){
+        $userLevel = DB::table('document_approvals')
+                    ->where('approver_id', Auth::user()->id)
+                    ->first();
+
+        $nextApproval = DB::table('document_approvals')
+                        ->where('dcn_number', $dcnNum)
+                        ->where('approver_level', '>', $userLevel->approver_level)
+                        ->orderBy('approver_level', 'ASC')
+                        ->first();
+
+        // return $userLevel;
+        if($nextApproval){
+            return $nextApproval->approver_level;
+        }else{
+            return null;
+        }
+    }
+
     public function approveDocument(Request $req){
         // return $req;
         DB::beginTransaction();
@@ -95,6 +123,15 @@ class DocumentApprovalController extends Controller
             $docStat = '';
             if($req['action'] === "A"){
                 $docStat = 'Document Approved';
+                $nextApprover = $this->getNextApproval($req['dcnNumber']);
+                if($nextApprover  != null){
+                    DB::table('document_approvals')
+                    ->where('dcn_number', $req['dcnNumber'])
+                    ->where('approver_level', $nextApprover)
+                    ->update([
+                        'is_active' => 'Y'
+                    ]);
+                }
             }elseif($req['action'] === "R"){
                 $docStat = 'Document Rejected';
             }
@@ -108,6 +145,10 @@ class DocumentApprovalController extends Controller
             );
             array_push($docHistory, $insertHistory);
             insertOrUpdate($docHistory,'document_historys');
+
+            DB::table('documents')->where('dcn_number', $req['dcnNumber'])->update([
+                'updated_at' => getLocalDatabaseDateTime()
+            ]);
 
             DB::commit();
 

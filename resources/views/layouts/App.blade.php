@@ -168,6 +168,9 @@
 <script src="{{ ('/assets/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ ('/assets/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
+<script src="{{ ('/assets/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+
+<script src="{{ ('/assets/plugins/toastr/toastr.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ ('/assets/dist/js/adminlte.js') }}"></script>
 

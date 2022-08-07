@@ -97,6 +97,9 @@
                                 <a class="nav-link" id="custom-content-above-approval-tab" data-toggle="pill" href="#custom-content-above-approval" role="tab" aria-controls="custom-content-above-approval" aria-selected="false">Approval Status</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" id="custom-content-above-description-tab" data-toggle="pill" href="#custom-content-above-description" role="tab" aria-controls="custom-content-above-description" aria-selected="false">Description</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" id="custom-content-above-history-tab" data-toggle="pill" href="#custom-content-above-history" role="tab" aria-controls="custom-content-above-history" aria-selected="false">Document History</a>
                             </li>
                         </ul>
@@ -205,6 +208,7 @@
                                             </table>                                                    
                                         </div>
                                     </div>
+                                    @if($isApprovedbyUser->approval_status <> "A")
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <form action="">
@@ -221,6 +225,15 @@
                                                 </div>
                                             </form>
                                         </div>
+                                    </div>
+                                    @endif
+                                </div>
+
+                                <div class="tab-pane fade" id="custom-content-above-description" role="tabpanel" aria-labelledby="custom-content-above-description-tab">
+                                    <div class="col-lg-12">
+                                        <textarea class="docremark form-control" name="docremark">
+                                            {!! $document->description !!}
+                                        </textarea>                                      
                                     </div>
                                 </div>
 
@@ -296,12 +309,26 @@
                 },
                 success:function(response){
                     console.log(response);
+                    if(response){
+                        toastr.success('Document Approved')
+
+                        setTimeout(function(){ 
+                            location.reload();
+                        }, 2000);
+                    }
                 },
                 error: function(error) {
                     console.log(error);
+                    toastr.error(error)
+
+                    setTimeout(function(){ 
+                        location.reload();
+                    }, 2000);
                 }
             });
         }
+
+        $('.docremark').ckeditor();
     });
 </script>
 @endsection

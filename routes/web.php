@@ -34,6 +34,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => '/transaction/document'], function () {
         Route::get('/',             'Transaction\DocumentController@index')->middleware('checkAuth:transaction/document');
         Route::post('/save',        'Transaction\DocumentController@save')->middleware('checkAuth:transaction/document');
+        Route::post('/updateinfo/{p1}',         'Transaction\DocumentController@updatedocinfo')->middleware('checkAuth:transaction/document');
+        Route::post('/updatearea/{p1}',         'Transaction\DocumentController@updatearea')->middleware('checkAuth:transaction/document');
+        Route::post('/updatefiles/{p1}',        'Transaction\DocumentController@updatefiles')->middleware('checkAuth:transaction/document');
+    });
+
+    Route::group(['prefix' => '/transaction/doclist'], function () {
+        Route::get('/',             'Transaction\DocumentController@documentlist')->middleware('checkAuth:transaction/doclist');
+        Route::get('/detail/{p1}',  'Transaction\DocumentController@documentDetail')->middleware('checkAuth:transaction/doclist');
     });
 
     Route::group(['prefix' => '/transaction/docapproval'], function () {
@@ -41,6 +49,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/approve/detail/{id}',  'Transaction\DocumentApprovalController@approveDetail')->middleware('checkAuth:transaction/docapproval');
         Route::post('/approve',             'Transaction\DocumentApprovalController@approveDocument')->middleware('checkAuth:transaction/docapproval');
         Route::post('/reject',              'Transaction\DocumentApprovalController@rejectDocument')->middleware('checkAuth:transaction/docapproval');
+
+        // transaction/documentlist
+        
+        Route::get('/getNextApproval/{p1}',     'Transaction\DocumentApprovalController@getNextApproval')->middleware('checkAuth:transaction/docapproval');
     });
 
     Route::get('/_files/{dir?}/{file?}',    'Transaction\DocumentApprovalController@showFile')->name('files.showfile');
