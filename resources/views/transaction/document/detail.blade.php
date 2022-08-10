@@ -50,6 +50,7 @@
                             </ul>
                         </div>
                         <div class="col-lg-12">
+                            <br>
                             <div class="tab-content" id="custom-content-above-tabContent">
                                 <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
                                     <form action="{{ url('transaction/document/updateinfo') }}/{{ $documents->id }}" method="post" enctype="multipart/form-data">

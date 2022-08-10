@@ -1,0 +1,26 @@
+[33m[2022-08-08 15:04:13][2] Processing:[39m App\Jobs\SendEmailJob
+[32m[2022-08-08 15:04:17][2] Processed: [39m App\Jobs\SendEmailJob
+[33m[2022-08-08 15:06:35][4] Processing:[39m App\Jobs\SendEmailJob
+[32m[2022-08-08 15:06:39][4] Processed: [39m App\Jobs\SendEmailJob
+[33m[2022-08-08 15:11:40][5] Processing:[39m App\Jobs\SendEmailJob
+[32m[2022-08-08 15:11:43][5] Processed: [39m App\Jobs\SendEmailJob
+[33m[2022-08-08 15:14:17][6] Processing:[39m App\Jobs\SendEmailJob
+[32m[2022-08-08 15:14:20][6] Processed: [39m App\Jobs\SendEmailJob
+[33m[2022-08-08 15:16:18][7] Processing:[39m App\Jobs\SendEmailJob
+[32m[2022-08-08 15:16:22][7] Processed: [39m App\Jobs\SendEmailJob
+[33m[2022-08-08 15:18:55][8] Processing:[39m App\Jobs\SendEmailJob
+[32m[2022-08-08 15:18:58][8] Processed: [39m App\Jobs\SendEmailJob
+[33m[2022-08-08 15:26:45][9] Processing:[39m App\Jobs\SendEmailJob
+[32m[2022-08-08 15:26:51][9] Processed: [39m App\Jobs\SendEmailJob
+[33m[2022-08-08 15:34:01][10] Processing:[39m App\Jobs\SendEmailJob
+[37;41m[2022-08-08 15:34:02][10] Failed:    [39;49m App\Jobs\SendEmailJob
+[33m[2022-08-08 15:36:11][11] Processing:[39m App\Jobs\SendEmailJob
+[37;41m[2022-08-08 15:36:11][11] Failed:    [39;49m App\Jobs\SendEmailJob
+[33m[2022-08-08 15:38:15][12] Processing:[39m App\Jobs\SendEmailJob
+[32m[2022-08-08 15:38:19][12] Processed: [39m App\Jobs\SendEmailJob
+[33m[2022-08-08 15:40:26][13] Processing:[39m App\Jobs\SendEmailJob
+[37;41m[2022-08-08 15:40:26][13] Failed:    [39;49m App\Jobs\SendEmailJob
+[33m[2022-08-08 15:41:17][14] Processing:[39m App\Jobs\SendEmailJob
+[32m[2022-08-08 15:41:20][14] Processed: [39m App\Jobs\SendEmailJob
+[33m[2022-08-08 16:27:10][15] Processing:[39m App\Jobs\SendEmailJob
+[32m[2022-08-08 16:27:14][15] Processed: [39m App\Jobs\SendEmailJob
